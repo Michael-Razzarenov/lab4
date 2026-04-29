@@ -1,5 +1,28 @@
 import os
 
+class Student:
+    # Переопределяем стандартный метод записи свойств объекта
+    def __setattr__(self, key, value):
+        if key == "number":
+            value = int(value)
+        if key == "stipend":
+            value = int(value)
+        # Вызываем родительский метод записи
+        object.__setattr__(self, key, value)
+
+    # Конструктор класса для записи свойств объекта
+    def __init__(self, number, date, name, stipend, direction):
+        self.number = number
+        self.date = date
+        self.name = name
+        self.stipend = stipend
+        self.direction = direction
+
+    def __repr__(self):
+        return (f"Справка №{self.number} от {self.date}:"
+                f"{self.name}, стипендия {self.stipend}"
+                f"выдана в {self.direction}")
+
 
 # Функция подсчёта файлов в директории
 def calculate():
@@ -23,8 +46,8 @@ def read_data(current_directory):
         # Следующие строки файла читаем построчно
         for row in csvfile:
             parts = row.strip().split(";")
-            # Соединяем попарно заголовки и значения в словарь
-            obj = dict(zip(file_headers, parts))
+            #
+            obj = Student(parts[0], parts[1], parts[2], parts[3], parts[4])
             # Словари добавляем в список
             data.append(obj)
     return data, file_headers
@@ -35,7 +58,7 @@ def print_data(data):
     for row in data:
         print(row)
 
-
+'''
 # Функция сохранения результатов операций с данными в CSV файл
 def write_data(data_all, headers, filename, current_directory):
     # Файл открывается в режиме перезаписи
@@ -46,7 +69,7 @@ def write_data(data_all, headers, filename, current_directory):
         for item in data_all:
             row = [str(item[h]) for h in headers]
             csvfile.write(";".join(row) + "\n")
-
+'''
 
 def main():
     # Подсчёт файлов и получение пути к директории
@@ -56,11 +79,11 @@ def main():
     # Получение данных из CSV
     data_all, headers = read_data(current_directory)
     # Сортировка по строковому значению
-    sorted1 = sorted(data_all, key=lambda item: item['ФИО студента'])
+    sorted1 = sorted(data_all, key=lambda item: item.name)
     # Сортировка по числовому полю
-    sorted2 = sorted(data_all, key=lambda item: int(item['размер стипендии']))
+    sorted2 = sorted(data_all, key=lambda item: item.stipend)
     # Фильтрация по условию
-    filtered = [item for item in data_all if int(item['размер стипендии']) > 4000]
+    filtered = [item for item in data_all if item.stipend > 4000]
 
     # Вывод результатов
     print('\n', '2.1.Сортировка по ФИО студента:', )
@@ -71,8 +94,8 @@ def main():
     print_data(filtered)
 
     # Сохранение результатов в отдельные файлы
-    write_data(sorted1, headers, 'sorted_by_name.csv', current_directory)
-    write_data(sorted2, headers, 'sorted_by_money.csv', current_directory)
-    write_data(filtered, headers, 'filtered.csv', current_directory)
+    #write_data(sorted1, headers, 'sorted_by_name.csv', current_directory)
+    #write_data(sorted2, headers, 'sorted_by_money.csv', current_directory)
+    #write_data(filtered, headers, 'filtered.csv', current_directory)
 
 main()
