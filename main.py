@@ -19,36 +19,40 @@ class Student:
         self.direction = direction
 
     def __repr__(self):
-        return (f"Справка №{self.number} от {self.date}:"
-                f"{self.name}, стипендия {self.stipend}"
-                f"выдана в {self.direction}")
+        return (f"Справка №{self.number} от {self.date}: "
+                f"{self.name}, стипендия {self.stipend}, "
+                f"направление: {self.direction}")
 
-# Коллекция студентов
-class StudentCollection:
+# Класс родитель, определяет методы
+class BaseCollection:
 
     def __init__(self):
         # Список для хранения объектов
-        self.students = []
+        self.items = []
+        self._index = 0
 
-    # Функция добавления объектов Student
-    def add(self, student):
-        self.students.append(student)
+     # Функция добавления объектов Student
+    def add(self, item):
+        self.items.append(item)
 
-    # Итератор списка
+     # Итератор списка
     def __iter__(self):
         self._index = 0
         return self
 
     def __next__(self):
-        if self._index >= len(self.students):
+        if self._index >= len(self.items):
             raise StopIteration
-        result = self.students[self._index]
+        result = self.items[self._index]
         self._index += 1
         return result
 
     # Переопределение стандартного метода, для доступа к коллекции по индексу
     def __getitem__(self, item):
-        return self.students[item]
+        return self.items[item]
+
+# Коллекция студентов
+class StudentCollection(BaseCollection):
 
     # Функция чтения csv файла, как статический метод класса
     @staticmethod
@@ -68,19 +72,19 @@ class StudentCollection:
 
     def sorted_by_name(self):
         new_collection = StudentCollection()
-        for student in sorted(self.students, key=lambda item: item.name):
+        for student in sorted(self.items, key=lambda item: item.name):
             new_collection.add(student)
         return new_collection
 
     def sorted_by_stipend(self):
         new_collection = StudentCollection()
-        for student in sorted(self.students, key=lambda item: item.stipend):
+        for student in sorted(self.items, key=lambda item: item.stipend):
             new_collection.add(student)
         return new_collection
 
     def filtered_by_stipend(self, min_stipend):
-        for student in self.students:
-            if student.stipend < min_stipend:
+        for student in self:
+            if student.stipend > min_stipend:
                 yield student
 
     def print_all(self):
@@ -118,18 +122,21 @@ def main():
 
     collection, file_headers = StudentCollection.read_data(current_directory)
 
-    print('\n', '2.3.Студента со стипендией больше 4000:', )
+    print('\n2.3.Студента со стипендией больше 4000:', )
     for student in collection.filtered_by_stipend(4000):
         print(student)
 
 
-    print('\n', '2.1.Сортировка по ФИО студента:', )
+    print('\n2.1.Сортировка по ФИО студента:', )
     collection.sorted_by_name().print_all()
     collection.sorted_by_name().write_data(file_headers, 'sorted_by_name.csv', current_directory)
-    print("\n", "Сортировка по ФИО сохранена в файл: sorted_by_name.csv")
-    print('\n', '2.2.Сортировка по размеру стипендии:', )
+    print("\nСортировка по ФИО сохранена в файл: sorted_by_name.csv")
+    print('\n2.2.Сортировка по размеру стипендии:', )
     collection.sorted_by_stipend().print_all()
     collection.sorted_by_stipend().write_data(file_headers, 'sorted_by_money.csv', current_directory)
-    print("\n", "Сортировка по имени сохранена стипендии: sorted_by_money.csv")
+    print("\nСортировка по имени сохранена в файл: sorted_by_money.csv")
+
+    print("\nПервая запись в файле:\n", collection[1])
+    print("\nПоследняя запись в файле:\n", collection[-1])
 
 main()
