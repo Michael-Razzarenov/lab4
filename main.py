@@ -154,10 +154,10 @@ def main():
     collection.sorted_by_stipend().print_all()
     # Запись в файл
     collection.sorted_by_stipend().write_data(file_headers, 'sorted_by_money.csv', current_directory)
-    print("\nСортировка по имени сохранена в файл: sorted_by_money.csv")
+    print("\nСортировка по стипендии сохранена в файл: sorted_by_money.csv")
 
     # Демонстрация доступа к элементам коллекции по индексу
-    print("\nПервая запись в файле:\n", collection[1])
+    print("\nПервая запись в файле:\n", collection[0])
     print("\nПоследняя запись в файле:\n", collection[-1])
 
 main()
