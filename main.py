@@ -1,6 +1,7 @@
 import csv
 import os
 
+
 # Класс, определяющий свойства объекта по предметной области (справки студентам)
 class Student:
     # Переопределяем стандартный метод записи свойств объекта
@@ -26,6 +27,7 @@ class Student:
         return (f"Справка №{self.number} от {self.date}: "
                 f"{self.name}, стипендия {self.stipend}, "
                 f"направление: {self.direction}")
+
 
 # Базовый класс для коллекции
 class BaseCollection:
@@ -59,6 +61,7 @@ class BaseCollection:
     def __getitem__(self, item):
         return self.items[item]
 
+
 # Класс, ориентированный на обработку данных по предметной области (Таблица выданных справок студентам)
 class StudentCollection(BaseCollection):
 
@@ -78,8 +81,7 @@ class StudentCollection(BaseCollection):
                     row["дата"],
                     row["ФИО студента"],
                     row["размер стипендии"],
-                    row["куда выдается справка"]
-                )
+                    row["куда выдается справка"])
                 collection.add(student)
         return collection, file_headers
 
@@ -123,6 +125,7 @@ class StudentCollection(BaseCollection):
                        str(student.name), str(student.stipend), str(student.direction)]
                 csvfile.write(";".join(row) + "\n")
 
+
 # Функция подсчёта файлов в директории
 def calculate():
     # Получаем путь к текущей папке
@@ -133,6 +136,7 @@ def calculate():
     files = len([f for f in all_elem if os.path.isfile(os.path.join(current_directory, f))])
     # Возвращает количество файлов и путь к директории
     return files, current_directory
+
 
 # Главная функция
 def main():
@@ -147,7 +151,6 @@ def main():
     print('\n2.3.Студента со стипендией больше 4000:', )
     for student in collection.filtered_by_stipend(4000):
         print(student)
-
 
     print('\n2.1.Сортировка по ФИО студента:', )
     # Сортировка по ФИО
@@ -165,5 +168,6 @@ def main():
     # Демонстрация доступа к элементам коллекции по индексу
     print("\nПервая запись в файле:\n", collection[0])
     print("\nПоследняя запись в файле:\n", collection[-1])
+
 
 main()
