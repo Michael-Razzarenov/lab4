@@ -1,3 +1,4 @@
+import csv
 import os
 
 # Класс, определяющий свойства объекта по предметной области (справки студентам)
@@ -67,13 +68,18 @@ class StudentCollection(BaseCollection):
         collection = StudentCollection()
         # Открываем файл в режиме чтения по указанному пути с кодировкой UTF-8
         with open(os.path.join(current_directory, "data.csv"), 'r', encoding='utf-8') as csvfile:
+            reader = csv.DictReader(csvfile, delimiter=';')
             # Получаем первую строку файла, как заголовки
-            file_headers = next(csvfile).strip().split(";")
+            file_headers = reader.fieldnames
             # Следующие строки файла читаем построчно
-            for row in csvfile:
-                parts = row.strip().split(";")
-                #
-                student = Student(parts[0], parts[1], parts[2], parts[3], parts[4])
+            for row in reader:
+                student = Student(
+                    row["№"],
+                    row["дата"],
+                    row["ФИО студента"],
+                    row["размер стипендии"],
+                    row["куда выдается справка"]
+                )
                 collection.add(student)
         return collection, file_headers
 
